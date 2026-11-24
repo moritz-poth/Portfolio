@@ -91,7 +91,7 @@ function writePage(route, html) {
 }
 
 function copyImage(img, slug) {
-  const dst = path.join(OUT, slug, img.name);
+  const dst = path.join(OUT, slug, img.out);
   fs.mkdirSync(path.dirname(dst), { recursive: true });
   fs.copyFileSync(img.file, dst);
 }
@@ -128,7 +128,9 @@ const projects = listMd(path.join(ROOT, 'content', 'projekte'))
     const images = files.map((name) => ({
       file: path.join(dir, name),
       name,
-      src: url(`/${slug}/${encodeURIComponent(name)}`),
+      // Beschreibender Dateiname für die Google-Bildersuche, z. B. souls-01.jpg
+      out: `${slug}-${name.toLowerCase()}`,
+      src: url(`/${slug}/${encodeURIComponent(`${slug}-${name.toLowerCase()}`)}`),
       ...imageSize(path.join(dir, name)),
     }));
     const thumb = images.find((i) => i.name === data.vorschaubild) || images[0];
@@ -161,7 +163,8 @@ const pages = listMd(path.join(ROOT, 'content', 'seiten')).map((slug) => {
   let image = null;
   if (data.bild) {
     const file = path.join(ROOT, 'content', 'seiten', slug, data.bild);
-    image = { file, name: data.bild, src: url(`/${slug}/${encodeURIComponent(data.bild)}`), ...imageSize(file) };
+    const out = `moritz-poth-${slug}${path.extname(data.bild).toLowerCase()}`;
+    image = { file, name: data.bild, out, src: url(`/${slug}/${encodeURIComponent(out)}`), ...imageSize(file) };
   }
   return { slug, url: url(`/${slug}/`), title: data.titel || slug, seoTitel: data.seotitel || '', alt: data.bildtext || '', description: data.beschreibung || '', html: autop(body), image };
 });

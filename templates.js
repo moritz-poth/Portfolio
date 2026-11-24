@@ -101,10 +101,10 @@ ${scripts}<script src="${url('/js/scroll.js')}"></script>
 function list(c, { title, active, projects, path, description, image, jsonLd }) {
   const { esc } = c;
   const items = projects
-    .map((p) => {
+    .map((p, n) => {
       const t = p.thumb;
       const img = t
-        ? `<img width="800" height="${Math.round((t.h * 800) / t.w)}" src="${t.src}" class="attachment-large size-large wp-post-image" alt="${esc(`${p.title} – ${p.subtitle}, Schnitt: Moritz Poth`)}" title="${esc(p.title)}" />`
+        ? `<img width="800" height="${Math.round((t.h * 800) / t.w)}" src="${t.src}"${n > 0 ? ' loading="lazy"' : ''} class="attachment-large size-large wp-post-image" alt="${esc(`${p.title} – ${p.subtitle}, Schnitt: Moritz Poth`)}" title="${esc(p.title)}" />`
         : '';
       return `				<li id="post-${p.slug}">
 					<a href="${p.url}" title="${esc(p.title)}"><div class="title">
