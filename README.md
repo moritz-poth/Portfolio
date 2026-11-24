@@ -9,7 +9,7 @@ Statische Version der Portfolio-Website. GitHub baut die Seite automatisch neu, 
 | `content/projekte/<adresse>.md` | Text eines Projekts |
 | `content/projekte/<adresse>/` | die Galerie-Bilder dieses Projekts |
 | `content/seiten/<adresse>.md` | About, Contact, Impressum, Datenschutzerklärung (Bild ggf. im gleichnamigen Ordner) |
-| `content/site.json` | Name, Menü, Kategorien, Social-Links |
+| `content/site.json` | Name, Menü, Kategorien, Social-Links; unter `seo` Google-Titel, Beschreibung, Startseiten-Text und Profil-Links (Wikipedia, IMDb …) |
 | `static/css/style.css` | das Stylesheet aus dem alten Theme |
 | `static/fonts/` | die beiden Schriften (lokal, statt von Google) |
 | `static/royalslider/` | RoyalSlider; Einstellungen in `static/js/slider.js` |
@@ -51,6 +51,10 @@ Schnitt: Moritz Poth
 Am einfachsten kopierst du ein bestehendes Projekt (`.md`-Datei + Ordner) und änderst Namen, Text und Bilder.
 
 4. In GitHub Desktop: Commit → Push. Nach etwa einer Minute ist das Projekt online.
+
+## Seiten: optionale Felder für Google
+
+In `content/seiten/<adresse>.md` gehen zusätzlich `seotitel:` (Titel im Browser-Tab und bei Google), `beschreibung:` (Text unter dem Google-Treffer) und `bildtext:` (Beschreibung des Bildes).
 
 ## RoyalSlider
 

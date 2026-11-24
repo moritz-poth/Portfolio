@@ -527,3 +527,16 @@ footer {
 .royalSlider:not(.rsHor):not(.rsVer) > .rsContent ~ .rsContent {
 	display: none;
 }
+
+/* SEO: echte Überschriften, sehen aus wie vorher */
+h1#navi-name,
+#content .title h1.headline {
+	margin: 0;
+	font-weight: normal;
+}
+
+#content .intro {
+	text-align: center;
+	line-height: 26px;
+	margin-bottom: 60px;
+}

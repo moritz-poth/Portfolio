@@ -1,6 +1,6 @@
 {
   "titel": "MORITZ POTH",
-  "untertitel": "Filmeditor",
+  "untertitel": "Filmeditor Berlin",
   "domain": "https://moritz-poth.com",
 
   "menue": [
@@ -15,6 +15,22 @@
     "fiction":          { "name": "FICTION", "startseite": true },
     "documentary":      { "name": "DOCUMENTARY" },
     "commercial-music": { "name": "COMMERCIAL/MUSIC" }
+  },
+
+  "seo": {
+    "startTitel": "Moritz Poth – Filmeditor in Berlin | Schnitt für Serie, Spielfilm & Dokumentarfilm",
+    "titelZusatz": "Moritz Poth – Filmeditor Berlin",
+    "beschreibung": "Moritz Poth ist Filmeditor in Berlin und schneidet Serien, Spielfilme, Dokumentarfilme, Werbung und Musikvideos – u. a. Maxton Hall, Der Palast, High Stakes und Souls.",
+    "intro": "Filmeditor in Berlin – Schnitt für Serie, Spielfilm, Dokumentarfilm, Werbung und Musikvideo.<br />Zuletzt: »High Stakes« (ZDFneo), »Der Palast« (ZDF) und »Maxton Hall« (Prime Video).",
+    "profile": [
+      "https://de.wikipedia.org/wiki/Moritz_Poth",
+      "https://www.wikidata.org/wiki/Q131329132",
+      "https://www.imdb.com/name/nm4471171/",
+      "https://filmschnitt.de/profil/moritz-poth",
+      "https://www.filmakademie-alumni.de/student.html?pid=3375",
+      "https://vimeo.com/moritzpoth",
+      "https://www.instagram.com/moritzpoth/"
+    ]
   },
 
   "social": {

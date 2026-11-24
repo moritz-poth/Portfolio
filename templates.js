@@ -14,9 +14,12 @@ const ICON = {
 
 // ---------------------------------------------------------------- header.php
 
-function header(c, { title, description = '', active = '', bodyClass = '' }) {
+function header(c, { title, description = '', active = '', bodyClass = '', path = '', image = '', jsonLd = null, nameIsH1 = false }) {
   const { site, url, esc, royalSlider } = c;
-  const fullTitle = title ? `${title} | ${site.titel}` : site.titel;
+  const fullTitle = title ? `${title} | ${site.seo.titelZusatz}` : site.seo.startTitel;
+  const desc = description || site.seo.beschreibung;
+  const abs = (p) => site.domain + url(p);
+  const nameTag = nameIsH1 ? 'h1' : 'div';
   const menu = site.menue
     .map((m) => {
       const href = m.link.startsWith('http') ? m.link : url(m.link);
@@ -31,7 +34,13 @@ function header(c, { title, description = '', active = '', bodyClass = '' }) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1030">
 <title>${esc(fullTitle)}</title>
-${description ? `<meta name="description" content="${esc(description)}" />\n` : ''}<link rel="icon" href="${url('/favicon-32.jpg')}" sizes="32x32" />
+<meta name="description" content="${esc(desc)}" />
+${path ? `<link rel="canonical" href="${esc(abs(path))}" />\n` : ''}<meta property="og:type" content="website" />
+<meta property="og:locale" content="de_DE" />
+<meta property="og:site_name" content="Moritz Poth – Filmeditor" />
+<meta property="og:title" content="${esc(fullTitle)}" />
+<meta property="og:description" content="${esc(desc)}" />
+${path ? `<meta property="og:url" content="${esc(abs(path))}" />\n` : ''}${image ? `<meta property="og:image" content="${esc(site.domain + image)}" />\n` : ''}${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>\n` : ''}<link rel="icon" href="${url('/favicon-32.jpg')}" sizes="32x32" />
 <link rel="icon" href="${url('/favicon-192.jpg')}" sizes="192x192" />
 <link rel="apple-touch-icon" href="${url('/apple-touch-icon.jpg')}" />
 ${royalSlider ? `<link rel="stylesheet" href="${url('/royalslider/royalslider.css')}" />\n<link rel="stylesheet" href="${url('/royalslider/skin/rs-moritz-poth.css')}" />\n` : ''}<link rel="stylesheet" href="${url('/css/fonts.css')}" type="text/css" />
@@ -41,7 +50,7 @@ ${royalSlider ? `<link rel="stylesheet" href="${url('/royalslider/royalslider.cs
 	<div id="wrapper">
 		<div id="body_center">
 			<div id="navigation">
-				<div id="navi-name">${site.titel}</div>
+				<${nameTag} id="navi-name">${site.titel}</${nameTag}>
 				<div id="navi-sub">${site.untertitel}</div>
 				<div id="navi-center"><div class="menu-container"><ul class="menu">
 					${menu}
@@ -89,13 +98,13 @@ ${scripts}<script src="${url('/js/scroll.js')}"></script>
 
 // ------------------------------------------------- index.php / category-*.php
 
-function list(c, { title, active, projects }) {
+function list(c, { title, active, projects, path, description, image, jsonLd, intro = '' }) {
   const { esc } = c;
   const items = projects
     .map((p) => {
       const t = p.thumb;
       const img = t
-        ? `<img width="800" height="${Math.round((t.h * 800) / t.w)}" src="${t.src}" class="attachment-large size-large wp-post-image" alt="${esc(p.title)}" title="${esc(p.title)}" />`
+        ? `<img width="800" height="${Math.round((t.h * 800) / t.w)}" src="${t.src}" class="attachment-large size-large wp-post-image" alt="${esc(`${p.title} – ${p.subtitle}, Schnitt: Moritz Poth`)}" title="${esc(p.title)}" />`
         : '';
       return `				<li id="post-${p.slug}">
 					<a href="${p.url}" title="${esc(p.title)}"><div class="title">
@@ -109,7 +118,8 @@ function list(c, { title, active, projects }) {
     .join('\n');
 
   return (
-    header(c, { title, active, bodyClass: 'home' }) +
+    header(c, { title, active, bodyClass: 'home', path, description, image, jsonLd, nameIsH1: true }) +
+    (intro ? `			<div class="intro">${intro}</div>\n` : '') +
     `			<ul>
 ${items}
 			</ul>
@@ -120,12 +130,12 @@ ${items}
 
 // ---------------------------------------------------------------- single.php
 
-function project(c, { p, newer, older }) {
+function project(c, { p, newer, older, path, description, image, jsonLd }) {
   const { url, royalSlider, esc } = c;
   let stills = '';
   if (p.images.length) {
     const slides = p.images
-      .map((i) => `<div class="rsContent">\n  <img class="rsImg" src="${i.src}" alt="${esc(p.title)}" />\n</div>`)
+      .map((i) => `<div class="rsContent">\n  <img class="rsImg" src="${i.src}" alt="${esc(`${p.title} – Filmstill`)}" />\n</div>`)
       .join('\n');
     stills = `	<div id="stills" class="stills">
 		<div class="royalSlider rsMoritzPoth rs-default-template" style="width:100%;">
@@ -142,14 +152,14 @@ function project(c, { p, newer, older }) {
     : '';
 
   return (
-    header(c, { title: p.title, bodyClass: 'single' }) +
+    header(c, { title: `${p.title} – ${p.subtitle}`, bodyClass: 'single', path, description, image, jsonLd }) +
     `<div class="next">${newer ? `<a href="${newer.url}" rel="next">&laquo; next</a>` : ''}</div>
 <div class="previous">${older ? `<a href="${older.url}" rel="prev">previous &raquo;</a>` : ''}</div>
 <div id="clear"></div>
 <div class="projektseite" id="post-${p.slug}">
 ${stills}
 	<div class="title">
-		<div class="headline">${p.title}</div>
+		<h1 class="headline">${p.title}</h1>
 		<div class="line"><span class="vline">&nbsp;</span><hr /></div>
 		<div class="subline">${p.subtitle}</div>
 	</div>
@@ -166,13 +176,13 @@ ${stills}
 
 // ------------------------------------------------------------------ page.php
 
-function page(c, { page, active }) {
+function page(c, { page, active, path, jsonLd }) {
   const { esc } = c;
   const img = page.image
-    ? `<img width="${page.image.w}" height="${page.image.h}" src="${page.image.src}" class="attachment-full size-full wp-post-image" alt="${esc(page.title)}" title="${esc(page.title)}" />`
+    ? `<img width="${page.image.w}" height="${page.image.h}" src="${page.image.src}" class="attachment-full size-full wp-post-image" alt="${esc(page.alt || page.title)}" title="${esc(page.title)}" />`
     : '';
   return (
-    header(c, { title: page.title, description: page.description, active, bodyClass: 'page' }) +
+    header(c, { title: page.seoTitel || page.title, description: page.description, active, bodyClass: 'page', path, image: page.image ? page.image.src : '', jsonLd, nameIsH1: true }) +
     `		${img}
 		<div class="text">
 ${page.html}

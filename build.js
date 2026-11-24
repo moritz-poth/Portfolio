@@ -163,7 +163,7 @@ const pages = listMd(path.join(ROOT, 'content', 'seiten')).map((slug) => {
     const file = path.join(ROOT, 'content', 'seiten', slug, data.bild);
     image = { file, name: data.bild, src: url(`/${slug}/${encodeURIComponent(data.bild)}`), ...imageSize(file) };
   }
-  return { slug, url: url(`/${slug}/`), title: data.titel || slug, description: data.beschreibung || '', html: autop(body), image };
+  return { slug, url: url(`/${slug}/`), title: data.titel || slug, seoTitel: data.seotitel || '', alt: data.bildtext || '', description: data.beschreibung || '', html: autop(body), image };
 });
 
 // ---------------------------------------------------------------------------
@@ -182,6 +182,28 @@ if (!royalSlider) {
 
 const ctx = { site, url, esc, royalSlider, year: new Date().getFullYear() };
 
+// Strukturierte Daten für Google: wer Moritz Poth ist und welche Profile zu ihm gehören
+const PERSON_ID = site.domain + '/#person';
+const aboutPage = pages.find((p) => p.slug === 'about');
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: 'Moritz Poth',
+  jobTitle: 'Filmeditor',
+  description: site.seo.beschreibung,
+  url: site.domain + url('/'),
+  ...(aboutPage && aboutPage.image ? { image: site.domain + aboutPage.image.src } : {}),
+  address: { '@type': 'PostalAddress', addressLocality: 'Berlin', addressCountry: 'DE' },
+  birthPlace: { '@type': 'Place', name: 'Aachen' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Filmakademie Baden-Württemberg' },
+  knowsAbout: ['Filmschnitt', 'Montage', 'Serienschnitt', 'Dokumentarfilmschnitt', 'Werbeschnitt'],
+  sameAs: site.seo.profile,
+};
+const plain = (html) => html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+const shorten = (t, n) => (t.length <= n ? t : t.slice(0, t.lastIndexOf(' ', n)) + ' …');
+const workType = (sub) => (/SERIE/i.test(sub) ? 'TVSeries' : /MUSIKVIDEO/i.test(sub) ? 'MusicVideoObject' : /FILM/i.test(sub) ? 'Movie' : 'CreativeWork');
+
 // Übersichtsseiten: Startseite = Kategorie mit "startseite": true
 for (const [key, cat] of Object.entries(site.kategorien)) {
   const list = projects.filter((p) => p.category === key);
@@ -189,7 +211,17 @@ for (const [key, cat] of Object.entries(site.kategorien)) {
   if (cat.startseite) routes.unshift('/');
   for (const route of routes) {
     const active = cat.startseite ? url('/') : url(`/category/${key}/`);
-    writePage(route, T.list(ctx, { title: cat.startseite && route === '/' ? null : cat.name, active, projects: list }));
+    const home = cat.startseite && route === '/';
+    writePage(route, T.list(ctx, {
+      title: home ? null : `${cat.name} – Filme`,
+      active,
+      projects: list,
+      path: route,
+      description: home ? site.seo.beschreibung : `${cat.name}: Projekte von Moritz Poth, Filmeditor in Berlin – ${list.map((p) => p.title).slice(0, 4).join(', ')} u. a.`,
+      image: list[0] && list[0].thumb ? list[0].thumb.src : '',
+      jsonLd: home ? person : null,
+      intro: home ? site.seo.intro : '',
+    }));
   }
 }
 
@@ -198,12 +230,29 @@ for (const p of projects) {
   for (const img of p.images) copyImage(img, p.slug);
   const same = projects.filter((x) => x.category === p.category);
   const i = same.indexOf(p);
-  writePage(`/${p.slug}/`, T.project(ctx, { p, newer: same[i - 1], older: same[i + 1] }));
+  writePage(`/${p.slug}/`, T.project(ctx, {
+    p,
+    newer: same[i - 1],
+    older: same[i + 1],
+    path: `/${p.slug}/`,
+    description: shorten(`${p.title} (${p.subtitle}) – Schnitt: Moritz Poth, Filmeditor in Berlin. ${plain(p.html)}`, 155),
+    image: p.thumb ? p.thumb.src : '',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': workType(p.subtitle),
+      name: p.title,
+      genre: p.subtitle,
+      dateCreated: p.date,
+      url: site.domain + p.url,
+      ...(p.thumb ? { image: site.domain + p.thumb.src } : {}),
+      editor: { '@type': 'Person', '@id': PERSON_ID, name: 'Moritz Poth', url: site.domain + url('/') },
+    },
+  }));
 }
 
 for (const page of pages) {
   if (page.image) copyImage(page.image, page.slug);
-  writePage(`/${page.slug}/`, T.page(ctx, { page, active: page.url }));
+  writePage(`/${page.slug}/`, T.page(ctx, { page, active: page.url, path: `/${page.slug}/`, jsonLd: page.slug === 'about' ? person : null }));
 }
 
 writePage('/404.html', T.notFound(ctx));
