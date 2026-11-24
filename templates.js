@@ -32,7 +32,7 @@ function header(c, { title, description = '', active = '', bodyClass = '', path 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=1030">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(desc)}" />
 ${path ? `<link rel="canonical" href="${esc(abs(path))}" />\n` : ''}<meta property="og:type" content="website" />
