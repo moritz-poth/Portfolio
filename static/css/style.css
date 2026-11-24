@@ -535,8 +535,7 @@ h1#navi-name,
 	font-weight: normal;
 }
 
-#content .intro {
-	text-align: center;
-	line-height: 26px;
-	margin-bottom: 60px;
+#footer_content .seo-line {
+	font-size: 11px;
+	color: #999999;
 }

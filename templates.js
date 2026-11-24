@@ -73,7 +73,7 @@ function footer(c, { scripts = '' } = {}) {
 	<footer>
 		<div id="footer_content">
 			<div id="footer_content_center">
-				<p><i class="icon">${ICON.copyright}</i> <span id="year">${year}</span> - all rights reserved - <a href="${url('/datenschutzerklaerung/')}" title="Datenschutzerkl&auml;rung">Datenschutzerkl&auml;rung</a> - <a href="${url('/impressum/')}" title="Impressum">Impressum</a><br /><br /></p>
+				<p><i class="icon">${ICON.copyright}</i> <span id="year">${year}</span> - all rights reserved - <a href="${url('/datenschutzerklaerung/')}" title="Datenschutzerkl&auml;rung">Datenschutzerkl&auml;rung</a> - <a href="${url('/impressum/')}" title="Impressum">Impressum</a><br /><span class="seo-line">${site.seo.footer}</span><br /><br /></p>
 				<ul class="social_icon">
 					<li>
 						<a href="${s.vimeo}" target="_blank" rel="noopener" title="Vimeo"><i class="icon">${ICON.vimeo}</i></a>
@@ -98,7 +98,7 @@ ${scripts}<script src="${url('/js/scroll.js')}"></script>
 
 // ------------------------------------------------- index.php / category-*.php
 
-function list(c, { title, active, projects, path, description, image, jsonLd, intro = '' }) {
+function list(c, { title, active, projects, path, description, image, jsonLd }) {
   const { esc } = c;
   const items = projects
     .map((p) => {
@@ -119,7 +119,6 @@ function list(c, { title, active, projects, path, description, image, jsonLd, in
 
   return (
     header(c, { title, active, bodyClass: 'home', path, description, image, jsonLd, nameIsH1: true }) +
-    (intro ? `			<div class="intro">${intro}</div>\n` : '') +
     `			<ul>
 ${items}
 			</ul>

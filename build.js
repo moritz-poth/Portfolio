@@ -220,7 +220,6 @@ for (const [key, cat] of Object.entries(site.kategorien)) {
       description: home ? site.seo.beschreibung : `${cat.name}: Projekte von Moritz Poth, Filmeditor in Berlin – ${list.map((p) => p.title).slice(0, 4).join(', ')} u. a.`,
       image: list[0] && list[0].thumb ? list[0].thumb.src : '',
       jsonLd: home ? person : null,
-      intro: home ? site.seo.intro : '',
     }));
   }
 }
