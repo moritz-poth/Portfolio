@@ -259,6 +259,16 @@ for (const page of pages) {
 
 writePage('/404.html', T.notFound(ctx));
 
+// Alte WordPress-Adressen: kleine Seiten, die sofort weiterleiten (GitHub Pages kann keine echten Weiterleitungen)
+for (const [from, to] of Object.entries(site.weiterleitungen || {})) {
+  if (from.startsWith('_')) continue;
+  if (fs.existsSync(path.join(OUT, from, 'index.html'))) {
+    warnings.push(`Weiterleitung ${from} übersprungen: diese Seite gibt es schon`);
+    continue;
+  }
+  writePage(from, T.redirect(ctx, site.domain + url(to)));
+}
+
 // Sitemap für Google: alle Übersichten, Projekte und Seiten (Entwürfe sind oben schon rausgefiltert)
 const sitemapRoutes = [
   '/',

@@ -56,6 +56,10 @@ Am einfachsten kopierst du ein bestehendes Projekt (`.md`-Datei + Ordner) und ä
 
 In `content/seiten/<adresse>.md` gehen zusätzlich `seotitel:` (Titel im Browser-Tab und bei Google), `beschreibung:` (Text unter dem Google-Treffer) und `bildtext:` (Beschreibung des Bildes).
 
+## Alte Adressen weiterleiten
+
+In `content/site.json` unter `weiterleitungen` steht je Zeile eine alte Adresse und wohin sie führt, z. B. `"/vita/": "/about/"`. Beim Bauen entsteht dafür eine kleine Seite, die sofort weiterleitet.
+
 ## RoyalSlider
 
 Die Galerie nutzt RoyalSlider (jQuery-Version, lizenziert). Die Einstellungen sind 1:1 aus WordPress übernommen und stehen in `static/js/slider.js`.

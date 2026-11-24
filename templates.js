@@ -203,4 +203,21 @@ function notFound(c) {
   );
 }
 
-module.exports = { list, project, page, notFound };
+// ------------------------------------------------------- alte Adresse → neue
+
+function redirect(c, target) {
+  const t = c.esc(target);
+  return `<!DOCTYPE html>
+<html lang="de-DE">
+<head>
+<meta charset="UTF-8" />
+<title>Weiterleitung</title>
+<link rel="canonical" href="${t}" />
+<meta http-equiv="refresh" content="0; url=${t}" />
+</head>
+<body><a href="${t}">${t}</a></body>
+</html>
+`;
+}
+
+module.exports = { list, project, page, notFound, redirect };
